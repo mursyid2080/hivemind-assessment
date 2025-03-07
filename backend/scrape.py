@@ -36,7 +36,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Geocoding Function (Using OpenStreetMap API)
+# Geocoding Function (Using Google Maps API)
 def get_geocode(address):
     base_url = f"https://maps.googleapis.com/maps/api/geocode/json?"
     params = {
@@ -72,7 +72,7 @@ def scrape_and_store():
     WebDriverWait(driver, 5).until(
         EC.presence_of_all_elements_located((By.CLASS_NAME, "fp_ll_holder"))
     )
-    # time.sleep(5)  # Allow results to load
+    
 
     # Connect to SQLite database
     conn = sqlite3.connect(DB_NAME)
@@ -83,7 +83,7 @@ def scrape_and_store():
 
     for outlet in outlets:
 
-        # Check if the outlet is visible
+        # Check if the outlet is visible since the filter set the display
         if outlet.value_of_css_property("display") == "none":
             continue  # Skip hidden elements
 
@@ -109,7 +109,7 @@ def scrape_and_store():
 
         # Save to database
         cursor.execute("""
-            INSERT INTO outlets (name, address, operating_hours, waze_link, latitude, longitude)
+            INSERT OR IGNORE INTO outlets (name, address, operating_hours, waze_link, latitude, longitude)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (name, address, operating_hours, waze_link, lat, lon))
 

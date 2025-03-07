@@ -3,14 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from together import Together
 import sqlite3
 from pydantic import BaseModel
-from dotenv import load_dotenv
 
 
 # Together AI URL for Query
 client = Together()
 url = "https://api.together.xyz/v1/completions"
-DB_NAME = "subway_outlets.db"
 
+DB_NAME = "subway_outlets.db"
 app = FastAPI()
 
 # Allow CORS for frontend requests
@@ -29,7 +28,7 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row  # Returns dictionary-like rows
     return conn
 
-# Root endpoint
+# Root endpoint to test 
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Subway Outlets API"}
@@ -72,13 +71,13 @@ async def chat(request: QueryRequest):
     outlets = cursor.fetchall()
     conn.close()
 
-    # Format the data for AI
+    # Format the data for prompt
     formatted_data = "\n".join([
         f"{outlet['name']} at {outlet['address']} with operating hours: {outlet['operating_hours'] or 'Unknown'}."
         for outlet in outlets
     ])
 
-    # Generate the AI prompt
+    # Generate the prompt
     prompt = f"You are Subway Location Finder. Given the following store data:\n{formatted_data}\n\nAnswer the question: {user_message}"
 
     try:

@@ -16,7 +16,7 @@ import MessageParser from "./bot/MessageParser";
 const BASE_API_URL = "http://localhost:8000";
 const RADIUS = 5000; // 5km
 
-// create custom icons
+// Create custom icons
 const outlineIcon = new Icon({
   iconUrl: require("./icons/outline.png"),
   iconSize: [38, 38] // size of the icon
@@ -34,6 +34,7 @@ export default function App() {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [chatbotVisible, setChatbotVisible] = useState(false);
 
+  // Fetch all the outlets
   useEffect(() => {
     axios.get(`${BASE_API_URL}/outlets`)
       .then(response => {
@@ -68,6 +69,7 @@ export default function App() {
       });
   }, []);
 
+  // Toggle when maerker is clicked
   const handleMarkerClick = (markerId) => {
     if (selectedMarker === markerId) {
       setSelectedMarker(null);
@@ -86,6 +88,7 @@ export default function App() {
     }
   };
 
+  // Toggle for chatbot
   const toggleChatbot = () => {
     setChatbotVisible(!chatbotVisible);
   };
@@ -131,7 +134,6 @@ export default function App() {
         
       </MapContainer>
       <button onClick={toggleChatbot} className="chatbot-toggle-button">
-        {/* {chatbotVisible ? 'Hide Chatbot' : 'Show Chatbot'} */}
       </button>
       <div className={`chatbot-container ${chatbotVisible ? '' : 'hidden'}`}>
         <Chatbot
